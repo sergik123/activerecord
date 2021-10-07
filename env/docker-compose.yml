@@ -1,0 +1,47 @@
+version: '2.0'
+services:
+
+  php-fpm:
+    container_name: php-fpm
+    image: pusachev/docker-php-fpm:7.2-latest
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - ../src/:/var/www/current/src
+    environment:
+      XDEBUG_ENABLED: 1
+      REDIS_ENABLED: 1
+
+  nginx:
+    container_name: nginx
+    image: pusachev/docker-nginx:latest
+    restart: always
+    links:
+      - php-fpm
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ../src:/var/www/current/src
+      - ./config/nginx/mvc.conf:/etc/nginx/sites-enabled/mvc.conf
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+    - 3309:3306
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql:delegated
+      - ./config/mysql/import:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
