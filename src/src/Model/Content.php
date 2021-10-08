@@ -26,15 +26,19 @@ class Content
         $this->conn->close();
     }
 
-    public function connect()
+    /*public function connect($db)
     {
 
         $conn=new Content();
+        $sql1='CREATE DATABASE IF NOT EXISTS web;';
         // sql to create table
-        $sql = 'CREATE TABLE IF NOT EXISTS content (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, text_content VARCHAR(350) NOT NULL)';
+
+        if ($conn->query($sql1) !== TRUE) {
+            echo "Error creating table: " . $conn->error;
+        }
+        $sql = 'CREATE TABLE IF NOT EXISTS $db (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, text_content VARCHAR(350) NOT NULL)';
         if ($conn->query($sql) !== TRUE) {
             echo "Error creating table: " . $conn->error;
         }
-
-    }
+    }*/
 }

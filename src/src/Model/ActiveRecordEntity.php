@@ -3,6 +3,7 @@ namespace Model;
 use Model\Content;
 
 
+
 abstract class ActiveRecordEntity
 {
 
@@ -19,7 +20,12 @@ abstract class ActiveRecordEntity
     /**
      * @return static[]
      */
-    public static function findAll() : array
+    public static function createDb() :void
+    {
+        $db = new Content();
+        $db->conn->query('CREATE TABLE IF NOT EXISTS content (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, text_content VARCHAR(350) NOT NULL)');
+    }
+    public static function findAll()
     {
         $db = new Content();
         $res=$db->conn->query('SELECT * FROM `' . static::getTableName() . '`')->fetch_assoc();
@@ -30,14 +36,14 @@ abstract class ActiveRecordEntity
     {
         $row=static::findAll();
         $db = new Content();
-        $txt=htmlspecialchars($content);
+        $txt='"'.$content.'"';
         if($row!=null)
         {
             $id=$row['id'];
-            $sql='UPDATE `'. static::getTableName() .'` SET text_content="'.$txt.'" WHERE id='.$id;
+            $sql='UPDATE `'. static::getTableName() .'` SET text_content='.$txt.' WHERE id='.$id;
         }
         else{
-            $sql = '"INSERT INTO `'.static::getTableName().'` (text_content) VALUES ('.$txt.')"';
+            $sql = 'INSERT INTO `'.static::getTableName().'` (text_content) VALUES ('.$txt.')';
         }
         $db->conn->query($sql);
     }

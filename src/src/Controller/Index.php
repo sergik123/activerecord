@@ -10,6 +10,7 @@ class Index extends AbstractController
 {
     public function index()
     {
+        Article::createDb();
         Article::sendText('my text from db');
         $articles = Article::findAll();
 
